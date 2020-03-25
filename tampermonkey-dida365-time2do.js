@@ -9,6 +9,35 @@
 // @grant        none
 // ==/UserScript==
 
+const section = `
+<section>
+    <ul>
+        <li class="project" draggable="false"><a class="project-box project-link l-item"><svg
+                    class="icon-summary-list">
+                    <use xlink:href="#summary-list"></use>
+                </svg><span class="l-title" id="today-tasks-time">今天任务时长</span>
+                <div class="color-tip" style="background-color: transparent;"></div>
+                <div class="action-tip"><span class="count"></span></div>
+            </a>
+        </li>
+        <li id="smart-project-sortable-placeholder" class="ui-sortable-placeholder hide"></li>
+    </ul>
+</section>
+<section>
+    <ul>
+        <li class="project" draggable="false"><a class="project-box project-link l-item"><svg
+                    class="icon-summary-list">
+                    <use xlink:href="#summary-list"></use>
+                </svg><span class="l-title" id="tommorrow-tasks-time">明天任务时长</span>
+                <div class="color-tip" style="background-color: transparent;"></div>
+                <div class="action-tip"><span class="count"></span></div>
+            </a>
+        </li>
+        <li id="smart-project-sortable-placeholder" class="ui-sortable-placeholder hide"></li>
+    </ul>
+</section>
+`.replace("\n", '');
+
 $.when($.ready).then(function () {
     $.when($.ready).then(function () {
         $(document).click(function () {
@@ -17,6 +46,11 @@ $.when($.ready).then(function () {
                 console.log(parseResponse(response));
             })
         });
+        setTimeout(function () {
+            const children = $('#project-list-scroller').children();
+            const lastChildIndex = children.length - 1;
+            $(section).insertAfter(children[lastChildIndex]);
+        }, 2000);
     })
 })
 
@@ -44,6 +78,8 @@ function parseResponse(response) {
     }
     console.log(`today is ${todayTime}`);
     console.log(`tomorrow is ${tommorrowTime}`);
+    $('#today-tasks-time').html(`今日：${todayTime.toFixed(2)}h`)
+    $('#tommorrow-tasks-time').html(`明日：${tommorrowTime.toFixed(2)}h`)
 }
 
 function parseTime(title) {
