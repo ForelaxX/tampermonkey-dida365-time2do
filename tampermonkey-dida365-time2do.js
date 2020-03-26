@@ -43,7 +43,9 @@ $.when($.ready).then(function () {
         $(document).click(function () {
             axios.get('/api/v2/batch/check/0').then(function (response) {
                 // handle success
-                console.log(parseResponse(response));
+                const [today, tommorrow] = parseResponse(response);
+                $('#today-tasks-time').html(`今日：${today.toFixed(2)}h`)
+                $('#tommorrow-tasks-time').html(`明日：${tommorrow.toFixed(2)}h`)
             })
         });
         setTimeout(function () {
@@ -78,15 +80,14 @@ function parseResponse(response) {
     }
     console.log(`today is ${todayTime}`);
     console.log(`tomorrow is ${tommorrowTime}`);
-    $('#today-tasks-time').html(`今日：${todayTime.toFixed(2)}h`)
-    $('#tommorrow-tasks-time').html(`明日：${tommorrowTime.toFixed(2)}h`)
+    return [todayTime, tommorrowTime];
 }
 
 function parseTime(title) {
     if (title.startsWith('【')) {
-        const timeString = title.match(/^【(.*)】/)[1];
+        var timeString = title.match(/^【(.*)】/)[1];
         if (timeString.endsWith('m')) {
-            timeString.replace('m', '');
+            timeString = timeString.replace('m', '');
             return +timeString / 60;
         }
         return +timeString
